@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="budgie.ico" type="image/x-icon"/>
+    <title>Budgie Catch</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: cyan;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+        }
+        #cube {
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            position: absolute;
+        }
+        #budgie {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Budgie Catch</h1>
+    </header>
+    <div id="cube"></div>
+    <img id="budgie" src="budgerigar.jpg" alt="Budgie Image">
+
+    <script>
+        const budgie = document.getElementById('budgie');
+        const cube = document.getElementById('cube');
+
+        let budgieX = 0;
+        let budgieY = 0;
+        const budgieSpeed = 5; // Increased speed to 5 millimeters per second
+
+        function moveBudgie() {
+            const cubeRect = cube.getBoundingClientRect();
+            const cubeX = cubeRect.left + cubeRect.width / 2;
+            const cubeY = cubeRect.top + cubeRect.height / 2;
+
+            const angle = Math.atan2(cubeY - budgieY, cubeX - budgieX);
+            budgieX += budgieSpeed * Math.cos(angle);
+            budgieY += budgieSpeed * Math.sin(angle);
+
+            budgie.style.left = budgieX + 'px';
+            budgie.style.top = budgieY + 'px';
+
+            // Check for collision
+            if (isCollision(budgie, cube)) {
+                alert('Good Job! You can try again!');
+                restartGame();
+            }
+
+            requestAnimationFrame(moveBudgie);
+        }
+
+        function isCollision(obj1, obj2) {
+            const rect1 = obj1.getBoundingClientRect();
+            const rect2 = obj2.getBoundingClientRect();
+
+            return (
+                rect1.left < rect2.right &&
+                rect1.right > rect2.left &&
+                rect1.top < rect2.bottom &&
+                rect1.bottom > rect2.top
+            );
+        }
+
+        function restartGame() {
+            // Reset budgie position
+            budgieX = 0;
+            budgieY = 0;
+            budgie.style.left = '0px';
+            budgie.style.top = '0px';
+        }
+
+        document.addEventListener('mousemove', (event) => {
+            cube.style.left = event.clientX - cube.clientWidth / 2 + 'px';
+            cube.style.top = event.clientY - cube.clientHeight / 2 + 'px';
+        });
+
+        moveBudgie(); // Start the budgie movement
+    </script>
+</body>
+</html>
